@@ -3,6 +3,7 @@ package com.example.productreceiver
 import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 
 class MainActivity : AppCompatActivity() {
     private lateinit var receiver: AddProductReceiver
@@ -11,19 +12,24 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         receiver = AddProductReceiver()
-    }
-
-    override fun onStart() {
-        super.onStart()
 
         registerReceiver(
             receiver,
             IntentFilter("com.example.shoppingChartApp.action.AddProduct")
         )
+
     }
 
-    override fun onStop() {
+    /*override fun onStart() {
+        super.onStart()
+
+
+    }*/
+
+  /*  override fun onStop() {
         super.onStop()
         unregisterReceiver(receiver)
-    }
+    }*/
+
+
 }
