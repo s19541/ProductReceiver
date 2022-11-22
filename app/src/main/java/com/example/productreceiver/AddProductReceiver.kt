@@ -13,6 +13,9 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 
 class AddProductReceiver : BroadcastReceiver() {
 
@@ -21,11 +24,16 @@ class AddProductReceiver : BroadcastReceiver() {
         if(intent.action == "com.example.shoppingChartApp.action.AddProduct"){
             val channelId = createChannel(context)
             val name = intent.extras?.getString("name")
-            val id = intent.extras?.getLong("id") as Long
+            val productId = intent.extras?.getLong("id") as Long
 
-            val addProductIntent = Intent().also {
+            val data = workDataOf("productId" to productId, "name" to name, "channelId" to channelId)
+            val worker = OneTimeWorkRequestBuilder<ProductWorker>().setInputData(data).build()
+
+            WorkManager.getInstance(context).enqueue(worker)
+
+            /*val addProductIntent = Intent().also {
                 it.component = ComponentName("com.example.shoppingchartapp", "com.example.shoppingchartapp.EditActivity")
-            }.putExtra("id", id)
+            }.putExtra("id", productId)
 
             val pendingIntent = PendingIntent.getActivity(
                 context,
@@ -44,7 +52,7 @@ class AddProductReceiver : BroadcastReceiver() {
                 .setAutoCancel(true)
                 .build()
 
-            NotificationManagerCompat.from(context).notify(0, notification)
+            NotificationManagerCompat.from(context).notify(0, notification)*/
         }
         else{
             Toast.makeText(context, "Unknown action", Toast.LENGTH_SHORT).show()
